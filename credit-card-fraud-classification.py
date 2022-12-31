@@ -8,8 +8,8 @@ from pyspark.sql.functions import when, col, lit, mean, isnan, count, concat
 
 # COMMAND ----------
 
-storage_account_name = "vmsampstorage"
-storage_account_access_key = "dTTYh95gBmOUTB5bJwqp8xNFec5z1Y1ARCj5ToE6iG3mGQKBp25SLIBkuCm1XBG62uF4Q8a9BOA0+AStrVqaZg=="
+storage_account_name = dbutils.secrets.get(scope="socialAnalyticScope", key="azurestoragename")
+storage_account_access_key = dbutils.secrets.get(scope="socialAnalyticScope", key="azurestoragekey")
 
 spark.conf.set(
   "fs.azure.account.key."+storage_account_name+".blob.core.windows.net",
@@ -121,32 +121,6 @@ cleanDF.display()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Add weight column 
-# MAGIC * Calculate weight
-# MAGIC * Add weight 
-
-# COMMAND ----------
-
-# label_1 = cleanDF.filter(cleanDF.label == 1).count()
-# label_0 = cleanDF.filter(cleanDF.label == 0).count()
-# ratio = label_1/label_0
-
-# label_1_wt  = 1- ratio
-# label_0_wt = ratio
-
-# print(label_1)
-# print(label_0)
-# print(label_1_wt)
-# print(label_0_wt)
-
-# COMMAND ----------
-
-# weightedDF = cleanDF.withColumn("weight", when(col("label") == '1', 0.6).otherwise(0.4))
-# weightedDF.display()
-
-# COMMAND ----------
-
-# MAGIC %md
 # MAGIC ### Train/Test Split
 # MAGIC * Use the same 80/20 split with a seed 
 
@@ -176,7 +150,7 @@ print(categoricalCols)
 
 # MAGIC %md
 # MAGIC ### Vector Assembler
-# MAGIC * Now we can combine our OHE categorical features with our numeric features.
+# MAGIC * Now we can combine our OHE categorical features with our numeric features
 
 # COMMAND ----------
 
@@ -192,7 +166,8 @@ print(numericCols)
 
 # MAGIC %md
 # MAGIC ### Evaluate model
-# MAGIC * For right now, let's use accuracy as our metric. This is available from MulticlassClassificationEvaluator 
+# MAGIC * For this demo, we will use accuracy as the metric
+# MAGIC * This is available from MulticlassClassificationEvaluator 
 
 # COMMAND ----------
 
@@ -290,11 +265,7 @@ pipelineModel.write().overwrite().save(pipelinePath)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Loading models
-# MAGIC 
-# MAGIC When you load in models, you need to know the type of model you are loading back in (was it a linear regression or logistic regression model?).
-# MAGIC 
-# MAGIC For this reason, we recommend you always put your transformers/estimators into a Pipeline, so you can always load the generic PipelineModel back in.
+# MAGIC ### Loading models
 
 # COMMAND ----------
 
@@ -305,7 +276,3 @@ savedPipelineModel = PipelineModel.load(pipelinePath)
 # COMMAND ----------
 
 print(savedPipelineModel)
-
-# COMMAND ----------
-
-

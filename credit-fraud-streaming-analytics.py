@@ -202,9 +202,9 @@ display(spark.sql(f"SELECT * FROM delta.`{transactionsParsedPath}`"))
 
 # MAGIC %sql
 # MAGIC CREATE OR REPLACE TEMP VIEW transactions_refined AS
-# MAGIC (SELECT step, type, amount, nameOrig, oldbalanceOrg, newbalanceOrig, oldbalanceDest, newbalanceDest,
-# MAGIC CONCAT(SUBSTR(nameOrig, 1, 1), SUBSTR(nameDest, 1, 1)) AS transaction, MOD(step, 24) AS hour
-# MAGIC FROM silver_transactions_temp)
+# MAGIC   (SELECT step, type, amount, nameOrig, oldbalanceOrg, newbalanceOrig, oldbalanceDest, newbalanceDest,
+# MAGIC   CONCAT(SUBSTR(nameOrig, 1, 1), SUBSTR(nameDest, 1, 1)) AS transaction, MOD(step, 24) AS hour
+# MAGIC   FROM silver_transactions_temp)
 
 # COMMAND ----------
 
