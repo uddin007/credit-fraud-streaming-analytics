@@ -17,7 +17,15 @@
 
 # COMMAND ----------
 
-# MAGIC %run ./fraud-stream-setup
+# MAGIC %run ./fraud-stream-setup-production
+
+# COMMAND ----------
+
+# MAGIC %run ./credit-fraud-udfs
+
+# COMMAND ----------
+
+# MAGIC %fs rm wasbs://output@vmsampstorage.blob.core.windows.net/trigger.txt
 
 # COMMAND ----------
 
@@ -42,14 +50,7 @@ savedPipelineModel = PipelineModel.load(pipelinePath)
 
 # COMMAND ----------
 
-source = "/FileStore/tables/"
-curr_file = "cr-out-03.json"
-userdir = streamingPath + "/"
-dbutils.fs.cp(source + curr_file, userdir + curr_file)
-
-# COMMAND ----------
-
-# MAGIC %fs ls dbfs:/user/salah.a.uddin@accenture.com/sslh/source/
+# MAGIC %fs ls wasbs://landing@vmsampstorage.blob.core.windows.net/
 
 # COMMAND ----------
 
@@ -119,18 +120,13 @@ dbutils.fs.cp(source + curr_file, userdir + curr_file)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC * display table size, it grows as we receive more data 
-
-# COMMAND ----------
-
-display(spark.sql(f"SELECT COUNT(*) FROM delta.`{bronzePath}`"))
-
-# COMMAND ----------
-
-# MAGIC %md
 # MAGIC ### Silver stage transformation 
 # MAGIC * In the first silver stage transformation, we will use transactions dataset and parse the JSON payload
 # MAGIC * JSON payload is parsed enforcing the schema 
+
+# COMMAND ----------
+
+time.sleep(30)
 
 # COMMAND ----------
 
@@ -181,15 +177,15 @@ display(spark.sql(f"SELECT COUNT(*) FROM delta.`{bronzePath}`"))
 
 # COMMAND ----------
 
-display(spark.sql(f"SELECT * FROM delta.`{transactionsParsedPath}`"))
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC * In second silver stage transformation, we will modifiy the data to match with the training dataset
 # MAGIC * It involves adding transaction and hour column
 # MAGIC * Drop columns not required for the model to work i.e., isFlag
 # MAGIC * In this case, we will keep nameOrig column (customer who started the transaction) to trace back and notify if predicted fraud 
+
+# COMMAND ----------
+
+time.sleep(30)
 
 # COMMAND ----------
 
@@ -217,12 +213,12 @@ display(spark.sql(f"SELECT * FROM delta.`{transactionsParsedPath}`"))
 
 # COMMAND ----------
 
-display(spark.sql(f"SELECT * FROM delta.`{transactionsEnrichedPath}`"))
+# MAGIC %md
+# MAGIC * Read stream and apply the classification model 
 
 # COMMAND ----------
 
-# MAGIC %md
-# MAGIC * Read stream and apply the classification model 
+time.sleep(30)
 
 # COMMAND ----------
 
@@ -248,22 +244,6 @@ streamPred = savedPipelineModel.transform(streamingData)
 
 # COMMAND ----------
 
-query = streamPred.writeStream.format("console").start()
-
-# COMMAND ----------
-
-query.recentProgress
-
-# COMMAND ----------
-
-query.lastProgress 
-
-# COMMAND ----------
-
-print(query.status)
-
-# COMMAND ----------
-
 display(streamPred)
 
 # COMMAND ----------
@@ -273,9 +253,4 @@ display(streamPred)
 
 # COMMAND ----------
 
-for s in spark.streams.active:
-  s.stop()
-
-# COMMAND ----------
-
-
+stop_stream(10, 10, 200)
