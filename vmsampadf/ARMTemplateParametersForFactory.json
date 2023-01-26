@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "vmsampadf"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"SalahAzureDatabrick_accessToken": {
+			"value": ""
+		},
+		"event-trigger_properties_pipeline1_parameters_FileNamePL": {
+			"value": "@triggerBody().fileName"
+		},
+		"event-trigger_properties_typeProperties_scope": {
+			"value": "/subscriptions/1161f054-bb82-4ef5-a394-549d6d89cb36/resourceGroups/VMSAMP123_group/providers/Microsoft.Storage/storageAccounts/vmsampstorage"
+		},
+		"landingCheckTrigger_properties_typeProperties_scope": {
+			"value": "/subscriptions/1161f054-bb82-4ef5-a394-549d6d89cb36/resourceGroups/VMSAMP123_group/providers/Microsoft.Storage/storageAccounts/vmsampstorage"
+		}
+	}
+}
