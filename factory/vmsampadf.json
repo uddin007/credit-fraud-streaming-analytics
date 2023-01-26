@@ -1,0 +1,9 @@
+{
+	"name": "vmsampadf",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "b05a32d6-7460-4b2a-82b6-24918cbfe5be",
+		"tenantId": "e0793d39-0939-496d-b129-198edd916feb"
+	}
+}

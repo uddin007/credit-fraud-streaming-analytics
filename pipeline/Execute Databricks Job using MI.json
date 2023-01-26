@@ -1,0 +1,58 @@
+{
+	"name": "Execute Databricks Job using MI",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Jobs API",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat('https://',pipeline().parameters.DatabricksWorkspaceID,'.azuredatabricks.net/api/2.1/jobs/run-now')",
+						"type": "Expression"
+					},
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"job_id\":',pipeline().parameters.JobID,'}')",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"JobID": {
+				"type": "string",
+				"defaultValue": "124254562440957"
+			},
+			"DatabricksWorkspaceID": {
+				"type": "string",
+				"defaultValue": "adb-6278216029197836.16"
+			},
+			"WaitSeconds": {
+				"type": "int",
+				"defaultValue": 30
+			}
+		},
+		"variables": {
+			"JobStatus": {
+				"type": "String",
+				"defaultValue": "Running"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-08T06:47:44Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
