@@ -15,14 +15,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'SalahAzureDatabrick'"
 		},
-		"event-trigger_properties_pipeline1_parameters_FileNamePL": {
-			"type": "string",
-			"defaultValue": "@triggerBody().fileName"
-		},
-		"event-trigger_properties_typeProperties_scope": {
-			"type": "string",
-			"defaultValue": "/subscriptions/1161f054-bb82-4ef5-a394-549d6d89cb36/resourceGroups/VMSAMP123_group/providers/Microsoft.Storage/storageAccounts/vmsampstorage"
-		},
 		"landingCheckTrigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/1161f054-bb82-4ef5-a394-549d6d89cb36/resourceGroups/VMSAMP123_group/providers/Microsoft.Storage/storageAccounts/vmsampstorage"
@@ -59,12 +51,6 @@
 					},
 					"SalahAzureDatabrick_accessToken": {
 						"value": "[parameters('SalahAzureDatabrick_accessToken')]"
-					},
-					"event-trigger_properties_pipeline1_parameters_FileNamePL": {
-						"value": "[parameters('event-trigger_properties_pipeline1_parameters_FileNamePL')]"
-					},
-					"event-trigger_properties_typeProperties_scope": {
-						"value": "[parameters('event-trigger_properties_typeProperties_scope')]"
 					},
 					"landingCheckTrigger_properties_typeProperties_scope": {
 						"value": "[parameters('landingCheckTrigger_properties_typeProperties_scope')]"
