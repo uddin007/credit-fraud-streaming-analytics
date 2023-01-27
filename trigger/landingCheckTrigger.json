@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Landing Checkpoint Trigger",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
