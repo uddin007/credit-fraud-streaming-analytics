@@ -1,9 +1,11 @@
 # credit-fraud-streaming-analytics
 The project is focused on developing real-time fraud detection using Spark Structured Streaming and Streaming Analytics.
 
-The data pipeline is shown below:
+The general development data pipeline is shown below. 
 
-![streaming-analytics](https://user-images.githubusercontent.com/37245809/210126645-a4dec8d9-62b0-4230-835b-314a793a3131.png)
+![streaming-analytics-v01](https://user-images.githubusercontent.com/37245809/215386111-2c725bf9-a5f9-40c0-a439-96c0d4ae56ef.png)
+
+A brief summary of development architecture and components are as follows.
 
 ### Streaming Multi-Hop Archtecture
 * Multi-hope pipeline – processing data in successive stages called Bronze, Silver and Gold. A single or all stages can be used depending on business use case
@@ -67,4 +69,27 @@ The data pipeline is shown below:
   * Probability of obtaining each class
   * And finally, the prediction, in terms of 0 and 1, here 1 being the predicted fraud transaction
 
+The general production data pipeline is shown below.
 
+![streaming-analytics-production-v01](https://user-images.githubusercontent.com/37245809/215386419-1e606355-832e-4101-9b1b-e04000d26256.png)
+
+A brief summary of production architecture and components are as follows. Azure Data Factory (ADF) is used as the orchestration framework. 
+
+### Azure BlobEventsTrigger
+* Create pipeline trigger based on new file arrival at source container 
+* The objective is to trigger the pipeline as new streaming data arrives 
+* Type of trigger is BlobEventsTrigger where 'blob path ends with' .json
+
+### ADF pipeline 
+* Pipeline starts with 'Get Metadata' to check if specific file exists, this is to ensure Databricks Job is not created while one is already running. 
+* The second part of the pipeline is an IF Condition. Based on previous event, if a job is not already running, it will move to the next stage i.e. to trigger a Databricks job
+* Finally, a Databricks Job is triggered with the specified Job Cluster configured using the Linked Service. 
+
+### Databricks Job termination
+* This is to ensure a Job is not continuously running if there is no new data at the source container.
+* Python UDFs are developed and applied to monitor new file arrivals at source location.
+* If files are not arriving for predefined period, UDFs are used to Gracefully Shutdown all active streams.
+* This will subsequently terminate the job cluster 
+
+### Data storage and notification
+* Under development 
