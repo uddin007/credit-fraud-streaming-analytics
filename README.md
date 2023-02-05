@@ -92,4 +92,24 @@ A brief summary of production architecture and components are as follows. Azure 
 * This will subsequently terminate the job cluster 
 
 ### Data storage and notification
-* Under development 
+* In purpose of sending slack notification, following items need to be setup
+  * A slack workspace 
+  * One channel for each user
+  * Create Slack App and configure Incoming Webhooks
+
+* Create member profile 
+  * Create a member data using Webhook URL, user ID and nameOrig 
+  * Join member data with transaction record
+  
+ ![image](https://user-images.githubusercontent.com/37245809/216832818-f0bbdfb0-a4dd-400f-956a-bf3ab69b1ec1.png)
+
+* Apply the registered slack notification function `slack_notification`
+  * Function has three arguments i.e. prediction, userid and webhook_url
+  * It evaluates each prediction output and send notification to the account owner
+  * In purpose of the demo, only three user account was used user01, user02 and user03
+  * In real production scenerio, there will be far more users and far less fraud transaction (output '1')
+ 
+ Finally, notification status is marked on the final table, as follows:
+ 
+ ![image](https://user-images.githubusercontent.com/37245809/216832896-02b5a40c-5fd8-45d9-b0eb-971d330acd1d.png)
+
