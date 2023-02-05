@@ -31,6 +31,10 @@ inputBalDF.groupBy('isFraud').count().show()
 
 # COMMAND ----------
 
+inputBalDF.display()
+
+# COMMAND ----------
+
 import numpy as np
 import pandas as pd
 

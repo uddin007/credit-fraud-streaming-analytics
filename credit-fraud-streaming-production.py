@@ -196,11 +196,40 @@ time.sleep(30)
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ### Load static member data containing
+# MAGIC * nameOrig (to identify transaction owner)
+# MAGIC * username (assume 3 users for the demo)
+# MAGIC * webhook url to send slack notification
+
+# COMMAND ----------
+
+(spark
+  .read
+  .format("csv")
+  .schema("nameOrig STRING, userid STRING, webhook_url STRING")
+  .option("header", True)
+  .load(f"{source_dir}/user-outreach.csv")
+  .createOrReplaceTempView("user_outreach"))
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SELECT * FROM user_outreach LIMIT 5
+
+# COMMAND ----------
+
 # MAGIC %sql
 # MAGIC CREATE OR REPLACE TEMP VIEW transactions_refined AS
+# MAGIC   SELECT * FROM
+# MAGIC   (
 # MAGIC   (SELECT step, type, amount, nameOrig, oldbalanceOrg, newbalanceOrig, oldbalanceDest, newbalanceDest,
 # MAGIC   CONCAT(SUBSTR(nameOrig, 1, 1), SUBSTR(nameDest, 1, 1)) AS transaction, MOD(step, 24) AS hour
 # MAGIC   FROM silver_transactions_temp)
+# MAGIC   LEFT JOIN
+# MAGIC   (SELECT * FROM user_outreach)
+# MAGIC   USING (nameOrig)
+# MAGIC   )
 
 # COMMAND ----------
 
@@ -230,7 +259,11 @@ streamingData = (spark
 
 # COMMAND ----------
 
-streamPred = savedPipelineModel.transform(streamingData)
+savedPipelineModel.transform(streamingData).createOrReplaceTempView("streaming_prediction")
+
+# COMMAND ----------
+
+# streamPred = savedPipelineModel.transform(streamingData)
 
 # COMMAND ----------
 
@@ -244,7 +277,24 @@ streamPred = savedPipelineModel.transform(streamingData)
 
 # COMMAND ----------
 
-display(streamPred)
+# display(streamPred)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Slack notification 
+# MAGIC * Apply the registered slack notification function `slack_notification`
+# MAGIC   * Function has three arguments i.e. prediction, userid and webhook_url
+# MAGIC   * It evaluates each prediction output and send notification to the account owner
+# MAGIC   * In purpose of the demo, only three user account was used user01, user02 and user03
+# MAGIC   * In real production scenerio, there will be far more users and far less fraud transaction (output '1')
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SElECT *,
+# MAGIC slack_notification(prediction, userid, webhook_url) as notify_user
+# MAGIC FROM streaming_prediction
 
 # COMMAND ----------
 

@@ -43,7 +43,7 @@ savedPipelineModel = PipelineModel.load(pipelinePath)
 # COMMAND ----------
 
 source = "/FileStore/tables/"
-curr_file = "cr-out-03.json"
+curr_file = "cr-out-01.json"
 userdir = streamingPath + "/"
 dbutils.fs.cp(source + curr_file, userdir + curr_file)
 
@@ -234,7 +234,16 @@ streamingData = (spark
 
 # COMMAND ----------
 
-streamPred = savedPipelineModel.transform(streamingData)
+# streamPred = savedPipelineModel.transform(streamingData)
+
+# COMMAND ----------
+
+savedPipelineModel.transform(streamingData).createOrReplaceTempView("test")
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SElECT * FROM test
 
 # COMMAND ----------
 
@@ -248,23 +257,23 @@ streamPred = savedPipelineModel.transform(streamingData)
 
 # COMMAND ----------
 
-query = streamPred.writeStream.format("console").start()
+# query = streamPred.writeStream.format("console").start()
 
 # COMMAND ----------
 
-query.recentProgress
+# query.recentProgress
 
 # COMMAND ----------
 
-query.lastProgress 
+# query.lastProgress 
 
 # COMMAND ----------
 
-print(query.status)
+# print(query.status)
 
 # COMMAND ----------
 
-display(streamPred)
+# display(streamPred)
 
 # COMMAND ----------
 

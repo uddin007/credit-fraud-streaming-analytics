@@ -20,6 +20,12 @@ streamingPath = "wasbs://" + blob_container + "@" + storage_account_name + ".blo
 
 # COMMAND ----------
 
+blob_container = 'members'
+
+source_dir = "wasbs://" + blob_container + "@" + storage_account_name + ".blob.core.windows.net/"
+
+# COMMAND ----------
+
 # streamingPath          = userhome + "/source"
 bronzePath             = userhome + "/bronze"
 transactionsParsedPath   = userhome + "/silver/transactions_parsed"
